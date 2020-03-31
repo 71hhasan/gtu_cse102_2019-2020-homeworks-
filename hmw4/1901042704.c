@@ -3,7 +3,7 @@
 #include<time.h>		
 #include<math.h>
 #include<stdlib.h>
-
+/*checking loops with true-false flags*/
 #define TRUE 1
 #define FALSE 0
 
@@ -39,19 +39,14 @@ void menu(){
 			checkLoops=FALSE;
 			
 			printf("\n");
-			printf("1)Decrypt and print encrypted_p1.img\n");	
+			printf("1) Decrypt and print encrypted_p1.img\n");	
 			printf("2) Decrypt and print encrypted_p2.img\n");
 			printf("3) Switch on the Tracking Machine\n");
 			printf("4) Encrypt the message\n");
 			printf("5) Switch off\n");
 			printf("\n please make your choice: \n");
 			scanf("%d", &selectOption);
-			
-			if(selectOption<1 || selectOption>5)
-			{
-				printf("invalid choice! Try again...\n");
-				checkLoops==TRUE;
-			}
+
 		}
 			checkLoops=TRUE;
 			switch(selectOption)
@@ -63,16 +58,20 @@ void menu(){
 					deep_decrypt_and_print ("encrypted_p2.img");
 					break;
 				case 3:
-					system("cls"); 
+					system("clear"); 
 					track_machine ();
 					break;									
 				case 4: 
 					encrypt_messages ("decrypted_p4.img");
 					break;
-				default :	
+				case 5: 
 					printf("switched off\n");
 					checkLoops=FALSE;
-					break;	
+					break;					
+				default:
+					printf("invalid choice! Try again...\n");
+					checkLoops=TRUE;
+					break;
 								
 			}
 		
@@ -143,12 +142,12 @@ void deep_decrypt_and_print (char* file_path)
 	char num1, num2, num3;
 	int sum=0, remainder;
 	
-		if((readingFile=fopen(file_path,"r"))==NULL)
+	if((readingFile=fopen(file_path,"r"))==NULL)
 	{
 		printf("reading error!!!\n");
 		exit(0);
 	}
-	
+	/*firstly take first two pieces*/
 	fscanf(readingFile, "%c", &num1);
 	fscanf(readingFile, "%c", &num2);
 	
@@ -156,7 +155,7 @@ void deep_decrypt_and_print (char* file_path)
 	{
 		fscanf(readingFile,"%c",&num3);
 		if(num3!='\n')	
-		{	
+		{	/*changing the char numbers to int and summation*/
 			sum=(num1 - '0')+(num2 - '0')+(num3 - '0');
 			remainder=sum%7;
 	
@@ -165,8 +164,8 @@ void deep_decrypt_and_print (char* file_path)
 			num2=num3;
 		}	
 		else
-		{
-			num3='0';
+		{	/*if num3== '\n' */
+			num3='0';						
 			sum=(num1 - '0')+(num2 - '0')+(num3 - '0');
 			remainder=sum%7;
 			printf("%c",decrypt_numbers(remainder));
@@ -195,9 +194,9 @@ void track_machine ()
 	{
 		checkLoops2=TRUE;
 		
-		for(x=1; x<=11; x++)	//satýr
+		for(x=1; x<=11; x++)	//line
 		{
-			for(y=1; y<=11; y++) //sütun
+			for(y=1; y<=11; y++) //column
 			{
 				if(x==6 && y==6)
 					printf("O");
@@ -215,6 +214,7 @@ void track_machine ()
 		printf("Y poistion: %d,  ", coordinateY);
 		printf("Displacement: %lf,  ", displacementEnemy);
 		printf("Distance to our camp: %lf\n", distanceToEnemy);
+		printf("press 'R' to refresh - press 'E' to exit\n");
 		
 		
 		while(checkLoops2==TRUE)
@@ -224,12 +224,12 @@ void track_machine ()
 
 			 if(command=='E' || command=='e')
 			{
-				checkLoops=FALSE;			//Exit
+				checkLoops=FALSE;	//Exit
 				checkLoops2=FALSE;	
 			}		
 			else if(command=='R' || command=='r')	
 			{
-				system("cls"); 
+				system("clear"); 
 				refresh_position(&coordinateX, &coordinateY, &distanceToEnemy, &displacementEnemy);
 			
 			//the enemy connot be present at our position
@@ -275,7 +275,7 @@ void encrypt_messages (char* message)
 		printf("reading error!!\n");
 		exit(0); 	
 	}
-		if((savingFile=fopen("saving.txt", "a"))==NULL)
+		if((savingFile=fopen("encrypted_p4.img", "w"))==NULL)
 	{
 		printf("saving error!!\n");
 		exit(0);
@@ -288,12 +288,12 @@ void encrypt_messages (char* message)
 	{
 		fscanf(readingMessage,"%c",&piece3);
 		if(piece3!='\n')
-		{	
-				writingNumber=encrypting(piece1)+encrypting(piece2)+encrypting(piece3);
-				writingNumber%=7;
-				
-				piece1=piece2;
-				piece2=piece3;	
+		{	/*implementing the formula*/
+			writingNumber=encrypting(piece1)+encrypting(piece2)+encrypting(piece3);
+			writingNumber%=7;
+			
+			piece1=piece2;
+			piece2=piece3;	
 			fprintf(savingFile,"%d",writingNumber);					
 		}
 		else 
@@ -318,7 +318,7 @@ void encrypt_messages (char* message)
 		}
 	}
 	
-	printf("\n the message writted to the saving file\n");
+	printf("\n the message enrypted to the encrypted_part4.img file!!!\n");
 	fclose(readingMessage);
 	fclose(savingFile);
 }
@@ -348,4 +348,3 @@ int encrypting(char number)
 	}	
 	return r_value;
 }	
-
